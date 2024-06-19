@@ -14,11 +14,11 @@ Before proceeding with the installation, make sure you have the following prereq
 1. **Clone the repository:**
 - Using HTTPS
    ```bash
-   git clone https://github.com/your-username/My-Banda-App-Backend.git
+   git clone https://github.com/your-username/LMS-Backend.git
    ```
  - Using SSH
     ```bash
-   git clone git@github.com:your-username/My-Banda-App-Backend.git
+   git clone git@github.com:your-username/LMS-Backend.git
    ```
 
 2. **Navigate to the project directory:**
