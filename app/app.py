@@ -56,7 +56,7 @@ def protected():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
-# CRUD routes for courses
+# routes for courses
 @app.route('/courses', methods=['GET'])
 def get_courses():
     courses = Course.query.all()
