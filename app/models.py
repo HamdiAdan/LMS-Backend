@@ -10,42 +10,42 @@ db = SQLAlchemy()
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    # Columns
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, unique=True, nullable=False)
     password_hash = db.Column(db.String, nullable=False)
-    role = db.Column(db.String, nullable=False)  # Can be 'student', 'tutor', or 'super admin'
+    role = db.Column(db.String, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # Relationships
     courses = db.relationship('Course', back_populates='instructor', cascade="all, delete-orphan")
     enrollments = db.relationship('Enrollment', back_populates='student', cascade="all, delete-orphan")
     reviews = db.relationship('Review', back_populates='student', cascade="all, delete-orphan")
     subscriptions_as_student = db.relationship('Subscription', back_populates='student', foreign_keys='Subscription.student_id', cascade="all, delete-orphan")
     subscriptions_as_tutor = db.relationship('Subscription', back_populates='tutor', foreign_keys='Subscription.tutor_id', cascade="all, delete-orphan")
 
-    # Serialization rules
     serialize_rules = ('-courses.instructor', '-enrollments', '-reviews', '-subscriptions_as_student', '-subscriptions_as_tutor')
 
-    # Validations
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password)
+
     @validates('email')
     def validate_email(self, key, email):
         assert '@' in email
         assert re.match(r"[^@]+@[^@]+\.[^@]+", email), "Invalid email format"
         return email
-    
+
     @validates('role')
     def validate_role(self, key, role):
         if role not in ['student', 'tutor', 'super admin']:
             raise ValueError("Role must be 'student', 'tutor', or 'super admin'.")
         return role
-    
+
     @validates('password_hash')
     def validate_password(self, key, password_hash):
         assert len(password_hash) > 8
         return password_hash
+
 
 # Course Model
 class Course(db.Model, SerializerMixin):

@@ -101,6 +101,5 @@ def delete_course(id):
     db.session.commit()
     return jsonify({'message': 'Course deleted successfully'}), 200
 
-# Main function
 if __name__ == '__main__':
     app.run(debug=True)
